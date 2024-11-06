@@ -114,3 +114,8 @@ ol {
   color: #007bb5;
   margin-bottom: 20px;
 }
+
+.winning-square {
+  background-color: yellow; 
+  font-weight: bold;
+}
