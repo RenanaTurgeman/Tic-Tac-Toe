@@ -57,7 +57,7 @@ export default function Game() {
   const [currentMove, setCurrentMove] = useState(0);
   const xIsNext = currentMove % 2 === 0;
   const currentSquares = history[currentMove];
-
+  const [historyOrder, setHistoryOrder] = useState(false)
   function handlePlay(nextSquares) {
     const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
     setHistory(nextHistory);
@@ -89,7 +89,6 @@ export default function Game() {
       );
     }
   });
-
   return (
     <div className="container">
       <h1 className="title">Tic Tac Toe</h1>
@@ -98,7 +97,8 @@ export default function Game() {
           <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
         </div>
         <div className="game-info">
-          <ol>{moves}</ol>
+          <button onClick={() => setHistoryOrder(!historyOrder)}>Toggle Order</button>
+          <ol>{historyOrder ? moves.slice().reverse() : moves}</ol>
         </div>
       </div>
     </div>
