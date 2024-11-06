@@ -22,8 +22,11 @@ function Board({ xIsNext, squares, onPlay }) {
     } else {
       nextSquares[i] = 'O';
     }
-    onPlay(nextSquares);
+    const row = Math.floor(i / 3);
+    const col = i % 3;
+    onPlay(nextSquares, { row, col });
   }
+
   const winnerInfo = calculateWinner(squares);
   const winner = winnerInfo ? winnerInfo.winner : null;
   const winningSquares = winnerInfo ? winnerInfo.winningSquares : [];
@@ -31,7 +34,7 @@ function Board({ xIsNext, squares, onPlay }) {
   let status;
   if (winner) {
     status = 'Winner: ' + winner;
-  }else if (!squares.includes(null)) {
+  } else if (!squares.includes(null)) {
     status = "It's a tie!";
   } else {
     status = 'Next player: ' + (xIsNext ? 'X' : 'O');
@@ -57,17 +60,20 @@ function Board({ xIsNext, squares, onPlay }) {
       ))}
     </>
   );
-  
 }
 
 export default function Game() {
-  const [history, setHistory] = useState([Array(9).fill(null)]);
+  const [history, setHistory] = useState([{ squares: Array(9).fill(null), location: null }]);
   const [currentMove, setCurrentMove] = useState(0);
   const xIsNext = currentMove % 2 === 0;
-  const currentSquares = history[currentMove];
-  const [historyOrder, setHistoryOrder] = useState(false)
-  function handlePlay(nextSquares) {
-    const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
+  const currentSquares = history[currentMove].squares;
+  const [historyOrder, setHistoryOrder] = useState(false);
+
+  function handlePlay(nextSquares, location) {
+    const nextHistory = [
+      ...history.slice(0, currentMove + 1),
+      { squares: nextSquares, location },
+    ];
     setHistory(nextHistory);
     setCurrentMove(nextHistory.length - 1);
   }
@@ -76,27 +82,25 @@ export default function Game() {
     setCurrentMove(nextMove);
   }
 
-  const moves = history.map((squares, move) => {
-    let description;
-  
-    if (move === currentMove) {
-      // Display message instead of button for the current move
-      description = `You are at move #${move}`;
-      return (
-        <li key={move}>
+  const moves = history.map((step, move) => {
+    const { location } = step;
+    const description = move === currentMove
+      ? `You are at move #${move}`
+      : move > 0
+        ? `Go to move #${move} (${location ? `${location.row + 1}, ${location.col + 1}` : ''})`
+        : 'Go to game start';
+    
+    return (
+      <li key={move}>
+        {move === currentMove ? (
           <h3>{description}</h3>
-        </li>
-      );
-    } else {
-      // Display button for other moves
-      description = move > 0 ? `Go to move #${move}` : 'Go to game start';
-      return (
-        <li key={move}>
+        ) : (
           <button onClick={() => jumpTo(move)}>{description}</button>
-        </li>
-      );
-    }
+        )}
+      </li>
+    );
   });
+
   return (
     <div className="container">
       <h1 className="title">Tic Tac Toe</h1>
