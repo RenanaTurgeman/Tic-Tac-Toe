@@ -113,6 +113,17 @@ export default function Game() {
           <ol>{historyOrder ? moves.slice().reverse() : moves}</ol>
         </div>
       </div>
+      <footer className="footer">
+        <p>
+          This game is based on the tutorial from{' '}
+          <a href="https://react.dev/learn/tutorial-tic-tac-toe" target="_blank" rel="noopener noreferrer">
+            React's Tic-Tac-Toe tutorial
+          </a>. View the code on{' '}
+          <a href="https://github.com/RenanaTurgeman/Tic-Tac-Toe" target="_blank" rel="noopener noreferrer">
+            GitHub
+          </a>.
+        </p>
+      </footer>
     </div>
   );
 }
